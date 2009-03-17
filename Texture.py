@@ -12,9 +12,14 @@ import unittest
 from numpy import zeros, dot
 
 class Texture:
-  def __init__(self, width, height):
+  def __init__(self, width, height, D_s, D_a, D_b, beta_i):
     self.width  = width
     self.height = height
+    
+    self.D_s    = D_s
+    self.D_a    = D_a
+    self.D_b    = D_b
+    self.beta_i = beta_i
     
     self.dx2     = 1.0 / width**2
     self.dy2     = 1.0 / height**2
@@ -23,7 +28,7 @@ class Texture:
     self.grid_a = zeros((width, height), 'd')
     self.grid_b = zeros((width, height), 'd')
   
-  def step():
+  def step(self):
     dx2     = self.dx2
     dy2     = self.dy2
     dnr_inv = self.dnr_inv
@@ -31,12 +36,10 @@ class Texture:
     g_a = self.grid_a
     g_b = self.grid_b
     
-    g_a[1:-1, 1:-1] =
-      ((g_a[0:-2, 1:-1] + g_a[2:, 1:-1]) * dy2
+    g_a[1:-1, 1:-1] = ((g_a[0:-2, 1:-1] + g_a[2:, 1:-1]) * dy2
         + (g_a[1:-1,0:-2] + g_a[1:-1, 2:]) * dx2) * dnr_inv
     
-    g_b[1:-1, 1:-1] =
-      ((g_b[0:-2, 1:-1] + g_b[2:, 1:-1]) * dy2
+    g_b[1:-1, 1:-1] = ((g_b[0:-2, 1:-1] + g_b[2:, 1:-1]) * dy2
         + (g_b[1:-1,0:-2] + g_b[1:-1, 2:]) * dx2) * dnr_inv
 
 class TextureTests(unittest.TestCase):

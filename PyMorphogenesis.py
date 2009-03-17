@@ -16,6 +16,8 @@ import math
 from PIL import Image, ImageFilter, ImageDraw, ImageChops, ImageStat, ImageMath
 from optparse import OptionParser
 
+from Texture import Texture
+
 program = 'PyMorphogenesis'
 version = 'Version 0.1, written by Thomas Deniau and Olivier Le Floch (c) 2009'
 
@@ -65,7 +67,11 @@ def main(argv=None):
   print '  texture height =', options.height
   print '...'
   
+  texture = Texture(
+    options.width, options.height,
+    options.D_s, options.D_a, options.D_b, options.beta_i)
   
+  texture.step()
   
   print 'Done !'
 
