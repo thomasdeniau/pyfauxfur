@@ -13,7 +13,6 @@ import Image
 import math
 # Documentation for PIL is available at :
 # <http://www.pythonware.com/library/pil/handbook/index.htm>
-from PIL import Image, ImageFilter, ImageDraw, ImageChops, ImageStat, ImageMath
 from optparse import OptionParser
 
 from Texture import Texture
