@@ -10,8 +10,6 @@ Copyright (c) 2009. All rights reserved.
 
 import sys
 import math
-# Documentation for PIL is available at :
-# <http://www.pythonware.com/library/pil/handbook/index.htm>
 from optparse import OptionParser
 
 from Texture import Texture
