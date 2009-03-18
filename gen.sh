@@ -6,4 +6,4 @@ if [ ! -x "$PYUIC" ]; then
 	PYUIC="/opt/local/Library/Frameworks/Python.framework/Versions/2.5/bin/pyuic4";	
 fi
 	
-$PYUIC MainWindow.ui > MainWindow.py
+$PYUIC MainWindow.ui > Ui_MainWindow.py
