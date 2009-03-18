@@ -69,9 +69,9 @@ def main(argv=None):
   
   texture.blit(0, 0)
   
-  # texture.step()
-  # 
-  # texture.make_texture()
+  texture.step()
+  
+  texture.make_texture()
   
   texture.dirty()
   

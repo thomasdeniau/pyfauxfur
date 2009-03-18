@@ -101,14 +101,14 @@ class MorphogenesisImageData(ImageData):
     B_o = self.grid_b
     B_n = zeros((width, height), 'd')
     
-    for i in range(0, height):
+    for i in range(0, width):
       # Treat the surface as a torus by wrapping at the edges
-      iplus1  = i + 1 if i != 0 else height - 1
-      iminus1 = i - 1 if i != height else 0
+      iplus1  = i + 1 if i < width - 1 else 0
+      iminus1 = i - 1 if i > 0 else width - 1
       
-      for j in range(0, width):
-        jplus1  = j + 1 if j != 0 else self.width - 1
-        jminus1 = j - 1 if j != width else 0
+      for j in range(0, height):
+        jplus1  = j + 1 if j < height -1 else 0
+        jminus1 = j - 1 if j > width - 1 else height -1
 
         # Component A
         A_diffuse  = self.D_a * (A_o[iplus1][j] - 2.0 * A_o[i][j] + A_o[iminus1][j] + A_o[i][jplus1] - 2.0 * A_o[i][j] + A_o[i][jminus1])
