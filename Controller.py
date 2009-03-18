@@ -1,10 +1,23 @@
 from PyQt4 import QtCore, QtGui
 
 from MainWindow import *
+from MorphogenesisImageData import MorphogenesisImageData
 
 import sys
 
+import threading
 
+class WorkerThread ( threading.Thread ):
+    def __init__(self, texture):
+        self.texture = texture
+        self.halt = False
+
+        threading.Thread.__init__(self)
+        
+    def run ( self ):
+        while not self.halt:
+            self.texture.step()
+            
 class Controller:        
     def __init__(self, window):
         self.window = window
@@ -13,7 +26,6 @@ class Controller:
     def awake(self):
         QtCore.QObject.connect(self.window.ui.runButton, QtCore.SIGNAL("clicked()"), self.run)
         QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.window.ui.widget.updateGL )
-        self.timer.start(0)
         
     def run(self):
         da = float(window.ui.daField.text())
@@ -23,9 +35,15 @@ class Controller:
         width = window.ui.widthSlider.value()
         height = window.ui.heightSlider.value()
         
+        texture = MorphogenesisImageData(width, height, ds, da, db, beta)
+        window.ui.widget.texture = texture
+        window.ui.widget.makeCurrent()
+        texture.blit(0, 0)
         
-        print "bla"
+        worker = WorkerThread(texture)
+        worker.start()
         
+        self.timer.start(0.04)
 
 if __name__ == "__main__":
     
