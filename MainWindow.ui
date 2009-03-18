@@ -83,7 +83,7 @@
   <customwidget>
    <class>QGLWidget</class>
    <extends>QWidget</extends>
-   <header location="global" >qglwidget.h</header>
+   <header location="global" >PyQt4.QtOpenGL.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
