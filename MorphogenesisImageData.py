@@ -38,8 +38,11 @@ class MorphogenesisImageData(ImageData):
     self.width  = width
     self.height = height
     
+    self.grid_a = zeros((width, height), 'd')
+    self.grid_b = zeros((width, height), 'd')
+    
     self.data_ptr = ctypes.c_void_p()
-    self.data_ptr.value = 0
+    self.make_texture()
     
     # TODO : Do we need to specify the 'pitch' keyword parameter ?
     super(MorphogenesisImageData, self).__init__(
@@ -53,17 +56,14 @@ class MorphogenesisImageData(ImageData):
     self.dx2     = 1.0 / width**2
     self.dy2     = 1.0 / height**2
     self.dnr_inv = 0.5 / (self.dx2 + self.dy2)
-    
-    self.grid_a = zeros((width, height), 'd')
-    self.grid_b = zeros((width, height), 'd')
   
   def _convert(self, format, pitch):
     if format == self._current_format and pitch == self._current_pitch:
       return self.data_ptr
     else:
       raise ValueError('Unable to retrieve the texture data without converting.')
-
-  def view(self):
+  
+  def make_texture(self):
     '''
     Calculates the colors for each point in the grid, and then copies this
     data into the image.
@@ -77,8 +77,6 @@ class MorphogenesisImageData(ImageData):
     # Maintain references so they're not deallacoted
     self.grid_retainer            = grid
     self.array_interface_retainer = array_interface
-    
-    self.dirty()
   
   def dirty(self):
     '''
@@ -99,9 +97,9 @@ class MorphogenesisImageData(ImageData):
     width  = self.width
     
     A_o = self.grid_a
-    A_n = array((width, height), 'd')
+    A_n = zeros((width, height), 'd')
     B_o = self.grid_b
-    B_n = array((width, height), 'd')
+    B_n = zeros((width, height), 'd')
     
     for i in range(0, height):
       # Treat the surface as a torus by wrapping at the edges
@@ -113,7 +111,7 @@ class MorphogenesisImageData(ImageData):
         jminus1 = j - 1 if j != width else 0
 
         # Component A
-        A_diffuse  = CA * (A_o[iplus1][j] - 2.0 * A_o[i][j] + A_o[iminus1][j] + A_o[i][jplus1] - 2.0 * A_o[i][j] + A_o[i][jminus1])
+        A_diffuse  = self.D_a * (A_o[iplus1][j] - 2.0 * A_o[i][j] + A_o[iminus1][j] + A_o[i][jplus1] - 2.0 * A_o[i][j] + A_o[i][jminus1])
         A_reaction = A_o[i][j] * B_o[i][j] - A_o[i][j] - 12.0
         
         A_n[i][j] = A_o[i][j] + 0.01 * (A_reaction + A_diffuse)
@@ -122,7 +120,7 @@ class MorphogenesisImageData(ImageData):
           A_n[i][j] = 0.0
 
         # Component B
-        B_diffusion = CB * (B_o[iplus1][j] - 2.0 * B_o[i][j] + B_o[iminus1][j] + B_o[i][jplus1] - 2.0 * B_o[i][j] + B_o[i][jminus1])
+        B_diffusion = self.D_b * (B_o[iplus1][j] - 2.0 * B_o[i][j] + B_o[iminus1][j] + B_o[i][jplus1] - 2.0 * B_o[i][j] + B_o[i][jminus1])
         B_reaction  = 16.0 - A_o[i][j] * B_o[i][j]
         B_n[i][j]   = B_o[i][j] + 0.01 * (B_reaction + B_diffusion)
         
@@ -131,7 +129,7 @@ class MorphogenesisImageData(ImageData):
     
   
   def __repr__(self):
-    print (self.grid_a, self.grid_b)
+    return str((self.grid_a, self.grid_b))
 
 class TextureTests(unittest.TestCase):
   def setUp(self):

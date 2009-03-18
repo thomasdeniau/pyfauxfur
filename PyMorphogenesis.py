@@ -67,11 +67,13 @@ def main(argv=None):
     options.width, options.height,
     options.D_s, options.D_a, options.D_b, options.beta_i)
   
-  texture.step()
-  
-  texture.view()
-  
   texture.blit(0, 0)
+  
+  # texture.step()
+  # 
+  # texture.make_texture()
+  
+  texture.dirty()
   
   print texture
   
