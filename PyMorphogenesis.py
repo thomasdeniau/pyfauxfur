@@ -9,7 +9,6 @@ Copyright (c) 2009. All rights reserved.
 """
 
 import sys
-import Image
 import math
 # Documentation for PIL is available at :
 # <http://www.pythonware.com/library/pil/handbook/index.htm>
@@ -73,12 +72,6 @@ def main(argv=None):
   texture.step()
   
   print 'Done !'
-
-# def imageMax(im):
-#   return max(im.getdata())
-# 
-# def imageSum(im):
-#   return sum(im.getdata())
 
 if __name__ == "__main__":
   import psyco
