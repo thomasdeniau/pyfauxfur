@@ -103,6 +103,9 @@ class MorphogenesisImageData(ImageData):
     
     g_b[1:-1, 1:-1] = ((g_b[0:-2, 1:-1] + g_b[2:, 1:-1]) * dy2
         + (g_b[1:-1,0:-2] + g_b[1:-1, 2:]) * dx2) * dnr_inv
+  
+  def __repr__(self):
+    print (self.grid_a, self.grid_b)
 
 class TextureTests(unittest.TestCase):
   def setUp(self):

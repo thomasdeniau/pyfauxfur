@@ -73,6 +73,8 @@ def main(argv=None):
   
   texture.blit(0, 0)
   
+  print texture
+  
   print 'Done !'
 
 if __name__ == "__main__":
