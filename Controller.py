@@ -26,6 +26,11 @@ class Controller:
     def awake(self):
         QtCore.QObject.connect(self.window.ui.runButton, QtCore.SIGNAL("clicked()"), self.run)
         QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.window.ui.widget.updateGL )
+        QtCore.QObject.connect(QtCore.QCoreApplication.instance(), QtCore.SIGNAL("aboutToQuit()"), self.cleanup)
+    
+    def cleanup(self):
+        if self.worker is not None:
+            self.worker.halt = True
         
     def run(self):
         da = float(window.ui.daField.text())
@@ -40,8 +45,8 @@ class Controller:
         window.ui.widget.makeCurrent()
         texture.blit(0, 0)
         
-        worker = WorkerThread(texture)
-        worker.start()
+        self.worker = WorkerThread(texture)
+        self.worker.start()
         
         self.timer.start(0.04)
 
