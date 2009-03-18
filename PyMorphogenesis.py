@@ -12,7 +12,7 @@ import sys
 import math
 from optparse import OptionParser
 
-from Texture import Texture
+from MorphogenesisImageData import MorphogenesisImageData
 
 program = 'PyMorphogenesis'
 version = 'Version 0.1, written by Thomas Deniau and Olivier Le Floch (c) 2009'
@@ -63,11 +63,15 @@ def main(argv=None):
   print '  texture height =', options.height
   print '...'
   
-  texture = Texture(
+  texture = MorphogenesisImageData(
     options.width, options.height,
     options.D_s, options.D_a, options.D_b, options.beta_i)
   
   texture.step()
+  
+  texture.view()
+  
+  texture.blit(0, 0)
   
   print 'Done !'
 
