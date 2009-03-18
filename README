@@ -1,0 +1,14 @@
+README
+======
+
+This file provides explanations regarding the PyMorphogenesis project.
+
+REQUIREMENTS
+------------
+
+This program has been tested with python 2.5. It requires PyQt4, NumPy and
+Psyco. It has been tested with PyQt4 4.4.4, NumPy 1.2.1 and Psyco 1.6.
+
+INSTALLATION
+------------
+
