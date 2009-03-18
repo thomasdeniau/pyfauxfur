@@ -95,14 +95,40 @@ class MorphogenesisImageData(ImageData):
     dy2     = self.dy2
     dnr_inv = self.dnr_inv
     
-    g_a = self.grid_a
-    g_b = self.grid_b
+    height = self.height
+    width  = self.width
     
-    g_a[1:-1, 1:-1] = ((g_a[0:-2, 1:-1] + g_a[2:, 1:-1]) * dy2
-        + (g_a[1:-1,0:-2] + g_a[1:-1, 2:]) * dx2) * dnr_inv
+    A_o = self.grid_a
+    A_n = array((width, height), 'd')
+    B_o = self.grid_b
+    B_n = array((width, height), 'd')
     
-    g_b[1:-1, 1:-1] = ((g_b[0:-2, 1:-1] + g_b[2:, 1:-1]) * dy2
-        + (g_b[1:-1,0:-2] + g_b[1:-1, 2:]) * dx2) * dnr_inv
+    for i in range(0, height):
+      # Treat the surface as a torus by wrapping at the edges
+      iplus1  = i + 1 if i != 0 else height - 1
+      iminus1 = i - 1 if i != height else 0
+      
+      for j in range(0, width):
+        jplus1  = j + 1 if j != 0 else self.width - 1
+        jminus1 = j - 1 if j != width else 0
+
+        # Component A
+        A_diffuse  = CA * (A_o[iplus1][j] - 2.0 * A_o[i][j] + A_o[iminus1][j] + A_o[i][jplus1] - 2.0 * A_o[i][j] + A_o[i][jminus1])
+        A_reaction = A_o[i][j] * B_o[i][j] - A_o[i][j] - 12.0
+        
+        A_n[i][j] = A_o[i][j] + 0.01 * (A_reaction + A_diffuse)
+        
+        if A_n[i][j] < 0.0:
+          A_n[i][j] = 0.0
+
+        # Component B
+        B_diffusion = CB * (B_o[iplus1][j] - 2.0 * B_o[i][j] + B_o[iminus1][j] + B_o[i][jplus1] - 2.0 * B_o[i][j] + B_o[i][jminus1])
+        B_reaction  = 16.0 - A_o[i][j] * B_o[i][j]
+        B_n[i][j]   = B_o[i][j] + 0.01 * (B_reaction + B_diffusion)
+        
+        if B_n[i][j] < 0.0:
+          B_n[i][j]=0.0
+    
   
   def __repr__(self):
     print (self.grid_a, self.grid_b)
