@@ -66,6 +66,7 @@ class MorphogenesisImageData(ImageData):
     self.beta_i = beta_i
     
     self.iteration = 0
+    self.fps = 0
     self.last_time = 1
   
   def _convert(self, format, pitch):
@@ -162,7 +163,8 @@ class MorphogenesisImageData(ImageData):
     self.grid_b = B_n
     
     self.last_time = time() - t
-  
+    self.fps = self.fps * 29./30. + 1./(self.last_time*30.)
+    
   def verboseStep(self):
     print 'Start iteration', self.iteration
     
@@ -170,17 +172,13 @@ class MorphogenesisImageData(ImageData):
     
     print 'mean(A) =', self.meanA(), 'mean(B) =', self.meanB()
     
-    print 'FPS : ', self.fps()
+    print 'FPS in the model code only : ', self.fps
   
   def meanA(self):
     return self.grid_a.mean()
   
   def meanB(self):
     return self.grid_b.mean()
-  
-  def fps(self):
-    '''Return the number of frames per second based on the length of the last execution'''
-    return "%.1f"%(1 / self.last_time)
   
   def __repr__(self):
     return str((self.grid_a, self.grid_b))

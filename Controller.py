@@ -34,10 +34,18 @@ class Controller:
     
     def setThreadFinished(self):
         self.setThreadRunning(False)
-        
+    
+    def updateUI(self):
+        self.window.ui.widget.updateGL()
+        if self.texture is not None:
+            self.window.ui.ipsLabel.setText("%1.f IPS" % (float(self.texture.iteration - self.lastIteration)/(time.time() - self.lastIterationTime)))
+            self.window.ui.iterationLabel.setText("Iteration %d" % self.texture.iteration)
+            self.lastIteration = self.texture.iteration
+            self.lastIterationTime = time.time()
+            
     def awake(self):
         QtCore.QObject.connect(self.window.ui.runButton, QtCore.SIGNAL("clicked()"), self.run)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.window.ui.widget.updateGL )
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.updateUI )
         QtCore.QObject.connect(self.window.ui.initButton, QtCore.SIGNAL("clicked()"), self.init)
         QtCore.QObject.connect(self.window.ui.stepButton, QtCore.SIGNAL("clicked()"), self.step)
         QtCore.QObject.connect(self.window.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.pause)
@@ -67,7 +75,7 @@ class Controller:
         self.window.ui.widget.setTexture(self.texture)
         self.window.ui.widget.makeCurrent()
         self.texture.blit(0, 0)
-    
+
     def step(self):
         if self.texture == None:
             self.init()
@@ -78,6 +86,8 @@ class Controller:
         if self.texture == None:
             self.init()
         if not self.running:
+            self.lastIteration = self.texture.iteration
+            self.lastIterationTime = time.time()
             self.worker = WorkerThread(self, self.texture)
             QtCore.QObject.connect(self.worker, QtCore.SIGNAL("finished()"), self.setThreadFinished)
             self.worker.start()
