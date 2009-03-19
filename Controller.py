@@ -49,6 +49,7 @@ class Controller:
         QtCore.QObject.connect(self.window.ui.initButton, QtCore.SIGNAL("clicked()"), self.init)
         QtCore.QObject.connect(self.window.ui.stepButton, QtCore.SIGNAL("clicked()"), self.step)
         QtCore.QObject.connect(self.window.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.pause)
+        QtCore.QObject.connect(self.window.ui.debugInfoMenuItem, QtCore.SIGNAL("triggered()"), self.logDebugInfo)
         QtCore.QObject.connect(QtCore.QCoreApplication.instance(), QtCore.SIGNAL("aboutToQuit()"), self.cleanup)
         self.setThreadRunning(False)
         
@@ -93,7 +94,11 @@ class Controller:
             self.worker.start()
             self.timer.start(40)
             self.setThreadRunning(True)
-            
+    
+    def logDebugInfo(self):
+        if self.texture is not None:
+            self.texture.logDebugInfo()
+
     def setOptions(self, options):
         self.window.ui.daField.setText(str(options.D_a))
         self.window.ui.dbField.setText(str(options.D_b))

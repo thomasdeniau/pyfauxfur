@@ -239,8 +239,25 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuDebug" >
+    <property name="title" >
+     <string>Debug</string>
+    </property>
+    <addaction name="debugInfoMenuItem" />
+   </widget>
+   <addaction name="menuDebug" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
+  <action name="debugInfoMenuItem" >
+   <property name="text" >
+    <string>Log Debug Info</string>
+   </property>
+  </action>
+  <action name="logParametersMenuItem" >
+   <property name="text" >
+    <string>Log Parameters</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

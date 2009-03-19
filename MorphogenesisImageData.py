@@ -174,12 +174,11 @@ class MorphogenesisImageData(ImageData):
     
     print 'FPS in the model code only : ', self.fps
   
-  def meanA(self):
-    return self.grid_a.mean()
-  
-  def meanB(self):
-    return self.grid_b.mean()
-  
+  def logDebugInfo(self):
+    print "Mean A : %f, Mean B : %f" %(self.grid_a.mean(), self.grid_b.mean())
+    print "Min A : %f, Min B : %f" %(self.grid_a.min(), self.grid_b.max())
+    print "Max A : %f, Max B : %f" %(self.grid_a.max(), self.grid_b.min())
+    
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
 
