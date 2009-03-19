@@ -46,6 +46,10 @@ class MorphogenesisImageData(ImageData):
     print '  texture height =', height
     print '...'
     
+    # TODO : Do we need to specify the 'pitch' keyword parameter ?
+    super(MorphogenesisImageData, self).__init__(
+      width, height, 'RGB', None)
+      
     self.width  = width
     self.height = height
     
@@ -54,10 +58,6 @@ class MorphogenesisImageData(ImageData):
     
     self.data_ptr = ctypes.c_void_p()
     self.make_texture()
-    
-    # TODO : Do we need to specify the 'pitch' keyword parameter ?
-    super(MorphogenesisImageData, self).__init__(
-      width, height, 'RGB', None)
     
     self.D_s    = D_s
     self.D_a    = D_a
@@ -75,7 +75,7 @@ class MorphogenesisImageData(ImageData):
       return self.data_ptr
     else:
       raise ValueError('Unable to retrieve the texture data without converting.')
-  
+
   def make_texture(self):
     '''
     Calculates the colors for each point in the grid, and then copies this
@@ -90,16 +90,14 @@ class MorphogenesisImageData(ImageData):
     # Maintain references so they're not deallacoted
     self.grid_retainer            = grid
     self.array_interface_retainer = array_interface
-  
+    
   def dirty(self):
     '''
     Force an update of the texture data.
     '''
-
     texture = self.texture
     internalformat = None
-    self.blit_to_texture(
-      texture.target, texture.level, 0, 0, 0, internalformat)
+    self.blit_to_texture(texture.target, texture.level, 0, 0, 0, internalformat)
   
   def step(self):
     dx2     = self.dx2
