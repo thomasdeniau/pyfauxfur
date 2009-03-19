@@ -17,7 +17,7 @@ license.
 
 import unittest
 import ctypes
-from numpy import dstack, zeros
+from numpy import dstack, random, zeros
 from pyglet.image import ImageData
 
 class MorphogenesisImageData(ImageData):
@@ -38,8 +38,8 @@ class MorphogenesisImageData(ImageData):
     self.width  = width
     self.height = height
     
-    self.grid_a = zeros((width, height), 'd')
-    self.grid_b = zeros((width, height), 'd')
+    self.grid_a = random.rand(width, height)
+    self.grid_b = random.rand(width, height)
     
     self.data_ptr = ctypes.c_void_p()
     self.make_texture()
