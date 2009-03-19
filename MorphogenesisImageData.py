@@ -116,7 +116,7 @@ class MorphogenesisImageData(ImageData):
     code = '''
       #line 119 "MorphogenesisImageData.py"
       int i, j, iplus1, jplus1, iminus1, jminus1;
-      blitz::Array<double, 2> A_o_ij, B_o_ij;
+      double A_o_ij, B_o_ij;
       
       for (i = 0; i < width; i++) {
         // Treat the surface as a torus by wrapping at the edges
@@ -127,21 +127,29 @@ class MorphogenesisImageData(ImageData):
           jplus1  = j < height - 1 ? j + 1 : 0;
           jminus1 = j > width - 1 ? j - 1 : height - 1;
           
-          A_o_ij = A_o[i][j]; B_o_ij = B_o[i][j];
+          A_o_ij = A_o(i, j); B_o_ij = B_o(i, j);
           
           // Component A
-          A_n[i][j] = max(0, A_o_ij + 0.01 * (
+          A_n(i, j) = A_o_ij + 0.01 * (
             // Reaction component
             A_o_ij * B_o_ij - A_o_ij - 12.0
             // Diffusion component
-            + D_a * (A_o[iplus1][j] - 2.0 * A_o_ij + A_o[iminus1][j] + A_o[i][jplus1] - 2.0 * A_o_ij + A_o[i][jminus1])));
-        
+            + D_a * (A_o(iplus1, j) - 2.0 * A_o_ij + A_o(iminus1, j) + A_o(i, jplus1) - 2.0 * A_o_ij + A_o(i, jminus1)));
+          
+          if (A_n(i, j) < 0.0) {
+            A_n(i, j) = 0.0;
+          }
+          
           // Component B
-          B_n[i][j]   = max(0, B_o_ij + 0.01 * (
+          B_n(i, j) = B_o_ij + 0.01 * (
             // Reaction component
             16.0 - A_o_ij * B_o_ij
             // Diffusion component
-            + D_b * (B_o[iplus1][j] - 2.0 * B_o_ij + B_o[iminus1][j] + B_o[i][jplus1] - 2.0 * B_o_ij + B_o[i][jminus1])));
+            + D_b * (B_o(iplus1, j) - 2.0 * B_o_ij + B_o(iminus1, j) + B_o(i, jplus1) - 2.0 * B_o_ij + B_o(i, jminus1)));
+          
+          if (B_n(i, j) < 0.0) {
+            B_n(i, j) = 0.0;
+          }
         }
       }
     '''
@@ -163,7 +171,7 @@ class MorphogenesisImageData(ImageData):
 
 class MorphogenesisImageDataTests(unittest.TestCase):
   def setUp(self):
-    self.texture = MorphogenesisImageData(100, 100, 0, 3.5, 16, 0)
+    self.texture = MorphogenesisImageData(400, 400, 0, 3.5, 16, 0)
   
   def testStep(self):
     self.texture.step()
