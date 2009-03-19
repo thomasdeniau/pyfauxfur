@@ -38,13 +38,7 @@ class MorphogenesisImageData(ImageData):
     '''
     
     print 'Generating texture with the following parameters :'
-    print '   Reaction rate =', D_s
-    print 'A diffusion rate =', D_a
-    print 'B diffusion rate =', D_b
-    print '    B decay rate =', beta_i
-    print ''
-    print '   texture width =', width
-    print '  texture height =', height
+    print '-s', D_s, '-a', D_a, '-b', D_b, '-d', beta_i, '-x', width, '-y', height
     print ''
     
     # TODO : Do we need to specify the 'pitch' keyword parameter ?
@@ -81,9 +75,15 @@ class MorphogenesisImageData(ImageData):
     data into the image.
     '''
     
-    # make sure to retain references to grid and array_interface in self to avoid garbage collecting
+    z = zeros((self.width, self.height), 'd')
     
-    self.grid = (255 * dstack((self.grid_a, zeros((self.width, self.height), 'd'), self.grid_b))).astype('u1')
+    min = self.grid_a.min()
+    max = self.grid_a.max()
+    
+    g = (self.grid_a - min) / (max - min)
+    
+    # make sure to retain references to grid and array_interface in self to avoid garbage collecting
+    self.grid = (255 * dstack((g, g, z))).astype('u1')
     self.array_interface = self.grid.__array_interface__
     
     data_ptr_int, readonly = self.array_interface['data']
