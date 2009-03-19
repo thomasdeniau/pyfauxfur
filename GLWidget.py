@@ -37,18 +37,6 @@ class GLWidget(QGLWidget):
         if self.texture is not None:
             self.texture.make_texture()
             self.texture.dirty()
-            #glEnable(GL_TEXTURE_2D)
-            #glBindTexture(GL_TEXTURE_2D, self.texture.texture.id)
-            #glBegin( GL_QUADS )
-            #glTexCoord2d(0.0,0.0)
-            #glVertex2d(0.0,0.0)
-            #glTexCoord2d(1.0,0.0)
-            #glVertex2d(self.texture.width,0.0)
-            #glTexCoord2d(1.0,1.0)
-            #glVertex2d(self.texture.width, self.texture.height)
-            #glTexCoord2d(0.0,1.0)
-            #glVertex2d(0.0,self.texture.height)
-            #glEnd()
             self.texture.blit(0,0)
         else:
             glClearColor(0,0,0,0) # noir

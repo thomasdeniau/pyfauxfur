@@ -70,7 +70,7 @@ def main(argv=None):
   controller.setOptions(options)
   window.show()
 
-  app.exec_()
+  return app.exec_()
 
 if __name__ == "__main__":
   sys.exit(main())

@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>Morphogenesis</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QHBoxLayout" name="horizontalLayout" >
@@ -140,7 +140,7 @@
         <item>
          <widget class="QPushButton" name="initButton" >
           <property name="text" >
-           <string>Init</string>
+           <string>Initialize</string>
           </property>
          </widget>
         </item>
@@ -156,9 +156,19 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2" >
         <item>
+         <widget class="QPushButton" name="pauseButton" >
+          <property name="text" >
+           <string>Pause</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="runButton" >
           <property name="text" >
            <string>Run</string>
+          </property>
+          <property name="default" >
+           <bool>true</bool>
           </property>
          </widget>
         </item>

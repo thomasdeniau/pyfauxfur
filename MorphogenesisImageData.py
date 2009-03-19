@@ -78,15 +78,14 @@ class MorphogenesisImageData(ImageData):
     Calculates the colors for each point in the grid, and then copies this
     data into the image.
     '''
-    grid = (255 * dstack((self.grid_a, zeros((self.width, self.height), 'd'), self.grid_b))).astype('u1')
-    array_interface = grid.__array_interface__
     
-    data_ptr_int, readonly = array_interface['data']
+    # make sure to retain references to grid and array_interface in self to avoid garbage collecting
+    
+    self.grid = (255 * dstack((self.grid_a, zeros((self.width, self.height), 'd'), self.grid_b))).astype('u1')
+    self.array_interface = self.grid.__array_interface__
+    
+    data_ptr_int, readonly = self.array_interface['data']
     self.data_ptr.value = data_ptr_int
-    
-    # Maintain references so they're not deallacoted
-    self.grid_retainer            = grid
-    self.array_interface_retainer = array_interface
     
   def dirty(self):
     '''
