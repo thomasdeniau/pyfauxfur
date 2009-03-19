@@ -179,6 +179,9 @@ class MorphogenesisImageData(ImageData):
     print "Mean A : %f, Mean B : %f" %(self.grid_a.mean(), self.grid_b.mean())
     print "Max A : %f, Max B : %f" %(self.grid_a.max(), self.grid_b.max())
   
+  def imageName(self):
+    return 'D_s=%f-D_a=%f-D_b=%f-beta_i=%f.png'%(self.D_s, self.D_a, self.D_b, self.beta_i)
+  
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
 
