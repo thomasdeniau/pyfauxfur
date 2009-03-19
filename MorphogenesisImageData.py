@@ -141,6 +141,9 @@ class MorphogenesisImageData(ImageData):
         if B_n[i][j] < 0.0:
           B_n[i][j] = 0.0
     
+    self.grid_a = A_n
+    self.grid_b = B_n
+    
     print 'End iteration', self.iteration
     
     self.iteration += 1
