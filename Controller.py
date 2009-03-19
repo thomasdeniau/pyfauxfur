@@ -41,6 +41,7 @@ class Controller:
     def saveScreenshot(self):
         dialog = QtGui.QFileDialog()
         dialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
+        dialog.selectFile(self.texture.imageName())
         if dialog.exec_() == QtGui.QDialog.Accepted:
           f = dialog.selectedFiles()[0]
           self.window.ui.widget.grabFrameBuffer().save(f)
