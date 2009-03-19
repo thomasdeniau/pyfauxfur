@@ -8,14 +8,15 @@ import sys
 import time
 
 class WorkerThread ( QtCore.QThread ):
-    def __init__(self, controller, texture):
+    def __init__(self, controller, texture, maxIterations):
         QtCore.QThread.__init__(self)
         self.controller = controller
         self.texture = texture
+        self.maxIterations = maxIterations
         self.halt = False
         
     def run ( self ):
-        while not self.halt:
+        while not self.halt and (self.maxIterations == 0 or self.texture.iteration < self.maxIterations):
             self.texture.step()
             time.sleep(0.001)
 
@@ -83,13 +84,13 @@ class Controller:
         self.texture.step()
         self.window.ui.widget.updateGL()
         
-    def run(self):
+    def run(self, maxIterations = 0):
         if self.texture == None:
             self.init()
         if not self.running:
             self.lastIteration = self.texture.iteration
             self.lastIterationTime = time.time()
-            self.worker = WorkerThread(self, self.texture)
+            self.worker = WorkerThread(self, self.texture, maxIterations)
             QtCore.QObject.connect(self.worker, QtCore.SIGNAL("finished()"), self.setThreadFinished)
             self.worker.start()
             self.timer.start(40)
