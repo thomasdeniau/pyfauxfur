@@ -113,6 +113,8 @@ class MorphogenesisImageData(ImageData):
     B_o = self.grid_b
     B_n = zeros((width, height), 'd')
     
+    self.iteration += 1
+    
     print 'Start iteration', self.iteration
     
     for i in range(0, width):
@@ -147,8 +149,6 @@ class MorphogenesisImageData(ImageData):
     print 'mean(A) =', A_n.mean(), 'mean(B) =', B_n.mean()
     
     print 'End iteration', self.iteration
-    
-    self.iteration += 1
   
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
