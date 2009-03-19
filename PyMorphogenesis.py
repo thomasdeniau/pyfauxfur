@@ -58,10 +58,6 @@ def main(argv=None):
   from MainWindow import MainWindow
   from Controller import Controller
   
-  f = QtOpenGL.QGLFormat();
-  f.setDoubleBuffer(False);
-  QtOpenGL.QGLFormat.setDefaultFormat(f);
-  
   app = QtGui.QApplication(args)
   
   window = MainWindow()
