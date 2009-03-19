@@ -19,6 +19,7 @@ import unittest
 import ctypes
 from numpy import dstack, random, zeros
 from pyglet.image import ImageData
+from time import time
 
 class MorphogenesisImageData(ImageData):
   def __init__(self, width, height, D_s, D_a, D_b, beta_i):
@@ -117,6 +118,8 @@ class MorphogenesisImageData(ImageData):
     
     print 'Start iteration', self.iteration
     
+    t = time()
+    
     for i in range(0, width):
       # Treat the surface as a torus by wrapping at the edges
       iplus1  = i + 1 if i < width - 1 else 0
@@ -148,7 +151,7 @@ class MorphogenesisImageData(ImageData):
     
     print 'mean(A) =', A_n.mean(), 'mean(B) =', B_n.mean()
     
-    print 'End iteration', self.iteration
+    print 'End iteration', self.iteration, ' in ', '%fs'%(time() - t)
   
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
