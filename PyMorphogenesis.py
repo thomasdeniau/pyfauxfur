@@ -54,7 +54,7 @@ def main(argv=None):
     print program + ', ' + version
     quit()
   
-  from PyQt4 import QtGui, QtOpenGL
+  from PyQt4 import QtGui
   from MainWindow import MainWindow
   from Controller import Controller
   
