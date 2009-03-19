@@ -38,7 +38,7 @@ class MorphogenesisImageData(ImageData):
     '''
     
     print 'Generating texture with the following parameters :'
-    print '-s', D_s, '-a', D_a, '-b', D_b, '-d', beta_i, '-x', width, '-y', height
+    print '-r -s', D_s, '-a', D_a, '-b', D_b, '-d', beta_i, '-x', width, '-y', height
     print ''
     
     # TODO : Do we need to specify the 'pitch' keyword parameter ?
@@ -175,9 +175,9 @@ class MorphogenesisImageData(ImageData):
     print 'FPS in the model code only : ', self.fps
   
   def logDebugInfo(self):
+    print "Min A : %f, Min B : %f" %(self.grid_a.min(), self.grid_b.min())
     print "Mean A : %f, Mean B : %f" %(self.grid_a.mean(), self.grid_b.mean())
-    print "Min A : %f, Min B : %f" %(self.grid_a.min(), self.grid_b.max())
-    print "Max A : %f, Max B : %f" %(self.grid_a.max(), self.grid_b.min())
+    print "Max A : %f, Max B : %f" %(self.grid_a.max(), self.grid_b.max())
     
   def __repr__(self):
     return str((self.grid_a, self.grid_b))

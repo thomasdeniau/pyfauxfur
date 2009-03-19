@@ -25,8 +25,8 @@ def main(argv=None):
     help="show version information and exit")
   
   parser.add_option(
-    '-q', '--quiet', dest='quiet', default=False, action='store_true',
-    help='be quiet when running')
+    '-r', '--autorun', dest='autorun', default=False, action='store_true',
+    help='automatically launch morphogenesis')
   
   parser.add_option(
     '-s', dest='D_s', type="float", default=0.0005,
@@ -64,6 +64,10 @@ def main(argv=None):
   controller = Controller(window)
   controller.awake()
   controller.setOptions(options)
+  
+  if options.autorun:
+    controller.run()
+  
   window.show()
 
   app.exec_()
