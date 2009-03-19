@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
+    <width>615</width>
     <height>451</height>
    </rect>
   </property>
@@ -42,8 +42,7 @@
          </widget>
         </item>
         <item row="0" column="1" >
-         <widget class="QLineEdit" name="daField" >
-         </widget>
+         <widget class="QLineEdit" name="daField" />
         </item>
         <item row="1" column="0" >
          <widget class="QLabel" name="label_2" >
@@ -53,9 +52,7 @@
          </widget>
         </item>
         <item row="1" column="1" >
-         <widget class="QLineEdit" name="dbField" >
-
-         </widget>
+         <widget class="QLineEdit" name="dbField" />
         </item>
         <item row="2" column="0" >
          <widget class="QLabel" name="label_3" >
@@ -65,9 +62,7 @@
          </widget>
         </item>
         <item row="2" column="1" >
-         <widget class="QLineEdit" name="dsField" >
-
-         </widget>
+         <widget class="QLineEdit" name="dsField" />
         </item>
         <item row="3" column="0" >
          <widget class="QLabel" name="label_4" >
@@ -77,9 +72,7 @@
          </widget>
         </item>
         <item row="3" column="1" >
-         <widget class="QLineEdit" name="betaField" >
-
-         </widget>
+         <widget class="QLineEdit" name="betaField" />
         </item>
         <item row="4" column="0" >
          <widget class="QLabel" name="label_5" >
@@ -130,11 +123,46 @@
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="runButton" >
-        <property name="text" >
-         <string>Run</string>
+       <spacer name="verticalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
         </property>
-       </widget>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5" >
+        <item>
+         <widget class="QPushButton" name="initButton" >
+          <property name="text" >
+           <string>Init</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="stepButton" >
+          <property name="text" >
+           <string>Step</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" >
+        <item>
+         <widget class="QPushButton" name="runButton" >
+          <property name="text" >
+           <string>Run</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -145,7 +173,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>601</width>
+     <width>615</width>
      <height>22</height>
     </rect>
    </property>

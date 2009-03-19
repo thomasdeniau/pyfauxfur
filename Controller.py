@@ -27,13 +27,15 @@ class Controller:
     def awake(self):
         QtCore.QObject.connect(self.window.ui.runButton, QtCore.SIGNAL("clicked()"), self.run)
         QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.window.ui.widget.updateGL )
+        QtCore.QObject.connect(self.window.ui.initButton, QtCore.SIGNAL("clicked()"), self.init)
+        QtCore.QObject.connect(self.window.ui.stepButton, QtCore.SIGNAL("clicked()"), self.step)
         QtCore.QObject.connect(QtCore.QCoreApplication.instance(), QtCore.SIGNAL("aboutToQuit()"), self.cleanup)
     
     def cleanup(self):
         if self.worker is not None:
             self.worker.halt = True
-        
-    def run(self):
+    
+    def init(self):
         da = float(self.window.ui.daField.text())
         db = float(self.window.ui.dbField.text())
         ds = float(self.window.ui.dsField.text())
@@ -41,14 +43,19 @@ class Controller:
         width = self.window.ui.widthSlider.value()
         height = self.window.ui.heightSlider.value()
         
-        texture = MorphogenesisImageData(width, height, ds, da, db, beta)
-        self.window.ui.widget.setTexture(texture)
+        self.texture = MorphogenesisImageData(width, height, ds, da, db, beta)
+        self.window.ui.widget.setTexture(self.texture)
         self.window.ui.widget.makeCurrent()
-        texture.blit(0, 0)
+        self.texture.blit(0, 0)
+    
+    def step(self):
+        self.texture.step()
+        self.window.ui.widget.updateGL()
         
-        self.worker = WorkerThread(texture)
-        self.worker.start()
-        
+    def run(self):
+        self.init()
+        self.worker = WorkerThread(self.texture)
+        self.worker.start()        
         self.timer.start(0.04)
 
     def setOptions(self, options):
