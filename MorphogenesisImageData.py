@@ -127,7 +127,7 @@ class MorphogenesisImageData(ImageData):
       
         for (j = 0; j < height; j++) {
           jplus1  = j < height - 1 ? j + 1 : 0;
-          jminus1 = j > width - 1 ? j - 1 : height - 1;
+          jminus1 = j > 0 ? j - 1 : height - 1;
           
           A_o_ij = A_o(i, j); B_o_ij = B_o(i, j);
           
