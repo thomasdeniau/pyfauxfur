@@ -9,14 +9,11 @@ Copyright (c) 2009. All rights reserved.
 """
 
 import sys
-import math
 from optparse import OptionParser
 
 from PyQt4 import QtCore, QtGui
 from MainWindow import MainWindow
 from Controller import Controller
-
-from MorphogenesisImageData import MorphogenesisImageData
 
 program = 'PyMorphogenesis'
 version = 'Version 0.1, written by Thomas Deniau and Olivier Le Floch (c) 2009'
@@ -29,7 +26,11 @@ def main(argv=None):
   parser.add_option(
     '-V', '--version', dest='version', default=False,
     action="store_true",
-    help="show version information and exit", metavar='FILE')
+    help="show version information and exit")
+  
+  parser.add_option(
+    '-q', '--quiet', dest='quiet', default=False, action='store_true',
+    help='be quiet when running')
   
   parser.add_option(
     '-s', dest='D_s', type="float", default=0.04,
@@ -58,7 +59,7 @@ def main(argv=None):
     quit()
   
   
-  app = QtGui.QApplication(sys.argv)
+  app = QtGui.QApplication(args)
     
   window = MainWindow()
   controller = Controller(window)
