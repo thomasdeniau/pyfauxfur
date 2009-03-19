@@ -13,7 +13,11 @@ SciPy 0.7.0 and Pyglet 1.1.2.
 INSTALLATION
 ------------
 
-Appart from the dependencies, no installation should be necessary.
+Apart from the dependencies, no installation should be necessary.
+
+If Ui_MainWindow.py has not been generated, you can do so by running
+
+	./gen.sh
 
 USAGE
 -----
@@ -25,3 +29,7 @@ Simply run
 For additional usage information, you can run
 
 	python PyMorphogenesis.py --help
+
+You can also generate a batch of sample images after 1000 iterations with
+
+	./test_images.sh
