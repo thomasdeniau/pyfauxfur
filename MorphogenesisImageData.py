@@ -66,6 +66,8 @@ class MorphogenesisImageData(ImageData):
     self.dx2     = 1.0 / width**2
     self.dy2     = 1.0 / height**2
     self.dnr_inv = 0.5 / (self.dx2 + self.dy2)
+    
+    self.iteration = 0
   
   def _convert(self, format, pitch):
     if format == self._current_format and pitch == self._current_pitch:
@@ -111,6 +113,8 @@ class MorphogenesisImageData(ImageData):
     B_o = self.grid_b
     B_n = zeros((width, height), 'd')
     
+    print 'Start iteration', self.iteration
+    
     for i in range(0, width):
       # Treat the surface as a torus by wrapping at the edges
       iplus1  = i + 1 if i < width - 1 else 0
@@ -135,8 +139,11 @@ class MorphogenesisImageData(ImageData):
         B_n[i][j]   = B_o[i][j] + 0.01 * (B_reaction + B_diffusion)
         
         if B_n[i][j] < 0.0:
-          B_n[i][j]=0.0
+          B_n[i][j] = 0.0
     
+    print 'End iteration', self.iteration
+    
+    self.iteration += 1
   
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
