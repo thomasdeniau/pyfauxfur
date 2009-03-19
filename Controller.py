@@ -5,24 +5,25 @@ from MorphogenesisImageData import MorphogenesisImageData
 
 import sys
 
-import threading
+import threading, time
 
 class WorkerThread ( threading.Thread ):
     def __init__(self, texture):
+        threading.Thread.__init__(self)
         self.texture = texture
         self.halt = False
-
-        threading.Thread.__init__(self)
         
     def run ( self ):
         while not self.halt:
             self.texture.step()
+            time.sleep(0.001)
             
 class Controller:        
     def __init__(self, window):
         self.window = window
         self.worker = None
-        self.timer = QtCore.QTimer(window)
+        self.texture = None
+        self.timer = QtCore.QTimer()
         
     def awake(self):
         QtCore.QObject.connect(self.window.ui.runButton, QtCore.SIGNAL("clicked()"), self.run)
@@ -49,14 +50,17 @@ class Controller:
         self.texture.blit(0, 0)
     
     def step(self):
+        if self.texture == None:
+            self.init()
         self.texture.step()
         self.window.ui.widget.updateGL()
         
     def run(self):
         self.init()
         self.worker = WorkerThread(self.texture)
-        self.worker.start()        
-        self.timer.start(0.04)
+        self.worker.start()
+        print "Worker started"
+        self.timer.start(40)
 
     def setOptions(self, options):
         self.window.ui.daField.setText(str(options.D_a))
