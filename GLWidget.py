@@ -33,7 +33,6 @@ class GLWidget(QGLWidget):
         self.resizeGL(self.size().width(), self.size().height())
 
     def paintGL(self):
-        print "paintGL"
         if self.texture is not None:
             self.texture.make_texture()
             self.texture.dirty()
