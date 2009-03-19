@@ -29,7 +29,7 @@ def main(argv=None):
     help='be quiet when running')
   
   parser.add_option(
-    '-s', dest='D_s', type="float", default=0.04,
+    '-s', dest='D_s', type="float", default=0.0005,
     help="reaction rate parameter [default: %default]", metavar='RATE')
   parser.add_option(
     '-a', dest='D_a', type="float", default=0.25,
