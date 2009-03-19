@@ -144,6 +144,8 @@ class MorphogenesisImageData(ImageData):
     self.grid_a = A_n
     self.grid_b = B_n
     
+    print 'mean(A) =', A_n.mean(), 'mean(B) =', B_n.mean()
+    
     print 'End iteration', self.iteration
     
     self.iteration += 1
