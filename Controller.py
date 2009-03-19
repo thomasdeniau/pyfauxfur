@@ -18,13 +18,13 @@ class WorkerThread ( QtCore.QThread ):
             self.texture.step()
             time.sleep(0.001)
 
-class Controller:        
+class Controller:
     def __init__(self, window):
         self.window = window
         self.worker = None
         self.texture = None
         self.running = False
-        self.dumpAtEnd = None
+        self.dumpAtEndPath = None
         self.timer = QtCore.QTimer()
     
     def setThreadRunning(self, flag):
@@ -34,10 +34,10 @@ class Controller:
     
     def setThreadFinished(self):
         self.setThreadRunning(False)
-        if self.dumpAtEnd is not None:
-          self.window.ui.widget.grabFrameBuffer().save(self.dumpAtEnd+".png")
+        if self.dumpAtEndPath is not None:
+          self.window.ui.widget.grabFrameBuffer().save(os.path.join(self.dumpAtEndPath, self.texture.imageName()) + '.png')
           QtCore.QCoreApplication.instance().quit()
-          
+    
     def updateUI(self):
         self.window.ui.widget.updateGL()
         if self.texture is not None:
@@ -90,7 +90,7 @@ class Controller:
         if self.texture == None:
             self.init()
         if not self.running:
-            if dumpAtEndPath is not None: self.dumpAtEnd = os.path.join(dumpAtEndPath, self.texture.imageName())
+            self.dumpAtEndPath = dumpAtEndPath
             self.lastIteration = self.texture.iteration
             self.lastIterationTime = time.time()
             self.worker = WorkerThread(self, self.texture, maxIterations)
