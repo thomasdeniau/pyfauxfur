@@ -11,10 +11,6 @@ Copyright (c) 2009. All rights reserved.
 import sys
 from optparse import OptionParser
 
-from PyQt4 import QtCore, QtGui
-from MainWindow import MainWindow
-from Controller import Controller
-
 program = 'PyMorphogenesis'
 version = 'Version 0.1, written by Thomas Deniau and Olivier Le Floch (c) 2009'
 
@@ -58,6 +54,9 @@ def main(argv=None):
     print program + ', ' + version
     quit()
   
+  from PyQt4 import QtGui
+  from MainWindow import MainWindow
+  from Controller import Controller
   
   app = QtGui.QApplication(args)
     
