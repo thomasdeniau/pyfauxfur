@@ -68,7 +68,7 @@ def main(argv=None):
   controller.setOptions(options)
   
   if options.autorun:
-    controller.run(maxIterations=options.iterations)
+    controller.run(maxIterations=options.iterations, dumpAtEndPath="")
   
   window.show()
 

@@ -3,9 +3,7 @@ from PyQt4 import QtCore, QtGui
 from MainWindow import *
 from MorphogenesisImageData import MorphogenesisImageData
 
-import sys
-
-import time
+import sys, os, time
 
 class WorkerThread ( QtCore.QThread ):
     def __init__(self, controller, texture, maxIterations):
@@ -26,6 +24,7 @@ class Controller:
         self.worker = None
         self.texture = None
         self.running = False
+        self.dumpAtEnd = None
         self.timer = QtCore.QTimer()
     
     def setThreadRunning(self, flag):
@@ -35,7 +34,10 @@ class Controller:
     
     def setThreadFinished(self):
         self.setThreadRunning(False)
-    
+        if self.dumpAtEnd is not None:
+          self.window.ui.widget.grabFrameBuffer().save(self.dumpAtEnd+".png")
+          QtCore.QCoreApplication.instance().quit()
+          
     def updateUI(self):
         self.window.ui.widget.updateGL()
         if self.texture is not None:
@@ -84,10 +86,11 @@ class Controller:
         self.texture.step()
         self.window.ui.widget.updateGL()
         
-    def run(self, maxIterations = 0):
+    def run(self, maxIterations = 0, dumpAtEndPath = None):
         if self.texture == None:
             self.init()
         if not self.running:
+            if dumpAtEndPath is not None: self.dumpAtEnd = os.path.join(dumpAtEndPath, self.texture.imageName())
             self.lastIteration = self.texture.iteration
             self.lastIterationTime = time.time()
             self.worker = WorkerThread(self, self.texture, maxIterations)
