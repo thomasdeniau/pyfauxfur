@@ -6,5 +6,6 @@ for D_s in 0.001 0.005 0.01 0.02 0.1; do
       for beta_i in 12; do
         ./PyMorphogenesis.py -r -p images -s $D_s -a $D_a -b $D_b -d $beta_i
       done
+    done
   done
 done
