@@ -119,7 +119,7 @@ class MorphogenesisImageData(ImageData):
       '''
       #line 119 "MorphogenesisImageData.py"
       int i, j, iplus1, jplus1, iminus1, jminus1;
-      double A_o_ij, B_o_ij;
+      double A_ij, B_ij;
       
       for (i = 0; i < width; i++) {
         // Treat the surface as a torus by wrapping at the edges
@@ -130,28 +130,36 @@ class MorphogenesisImageData(ImageData):
           jplus1  = j < height - 1 ? j + 1 : 0;
           jminus1 = j > 0 ? j - 1 : height - 1;
           
-          A_o_ij = A_o(i, j); B_o_ij = B_o(i, j);
+          A_ij = A_o(i, j); B_ij = B_o(i, j);
           
           // Component A
-          A_n(i, j) = A_o_ij
+          A_n(i, j) = A_ij
             // Reaction component
-            + D_s * (16 - A_o_ij * B_o_ij)
+            + D_s * (16.0 - A_ij * B_ij)
             // Diffusion component
-            + D_a * (A_o(iplus1, j) - 2.0 * A_o_ij + A_o(iminus1, j) + A_o(i, jplus1) - 2.0 * A_o_ij + A_o(i, jminus1));
+            + D_a * (A_o(iplus1, j) - 2.0 * A_ij + A_o(iminus1, j) + A_o(i, jplus1) - 2.0 * A_ij + A_o(i, jminus1));
           
-          if (A_n(i, j) < 0.0) {
+          A_ij = A_n(i, j);
+          
+          if (A_ij < 0.0) {
             A_n(i, j) = 0.0;
+          } else if (A_ij > 8.0) {
+            A_n(i, j) = 8.0;
           }
           
           // Component B
-          B_n(i, j) = B_o_ij
+          B_n(i, j) = B_ij
             // Reaction component
-            + D_s * (A_o_ij * B_o_ij - B_o_ij - beta_i)
+            + D_s * (A_ij * B_ij - B_ij - beta_i)
             // Diffusion component
-            + D_b * (B_o(iplus1, j) - 2.0 * B_o_ij + B_o(iminus1, j) + B_o(i, jplus1) - 2.0 * B_o_ij + B_o(i, jminus1));
+            + D_b * (B_o(iplus1, j) - 2.0 * B_ij + B_o(iminus1, j) + B_o(i, jplus1) - 2.0 * B_ij + B_o(i, jminus1));
           
-          if (B_n(i, j) < 0.0) {
+          B_ij = B_n(i, j);
+
+          if (B_ij < 0.0) {
             B_n(i, j) = 0.0;
+          } else if (B_ij > 8.0) {
+            B_n(i, j) = 8.0;
           }
         }
       }
