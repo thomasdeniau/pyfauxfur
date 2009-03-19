@@ -5,11 +5,11 @@ from MorphogenesisImageData import MorphogenesisImageData
 
 import sys
 
-import threading, time
+import time
 
-class WorkerThread ( threading.Thread ):
+class WorkerThread ( QtCore.QThread ):
     def __init__(self, controller, texture):
-        threading.Thread.__init__(self)
+        QtCore.QThread.__init__(self)
         self.controller = controller
         self.texture = texture
         self.halt = False
@@ -18,8 +18,7 @@ class WorkerThread ( threading.Thread ):
         while not self.halt:
             self.texture.step()
             time.sleep(0.001)
-        self.controller.running = False
-            
+
 class Controller:        
     def __init__(self, window):
         self.window = window
@@ -27,6 +26,14 @@ class Controller:
         self.texture = None
         self.running = False
         self.timer = QtCore.QTimer()
+    
+    def setThreadRunning(self, flag):
+        self.running = flag
+        self.window.ui.pauseButton.setEnabled(flag)
+        self.window.ui.runButton.setEnabled(not flag)
+    
+    def setThreadFinished(self):
+        self.setThreadRunning(False)
         
     def awake(self):
         QtCore.QObject.connect(self.window.ui.runButton, QtCore.SIGNAL("clicked()"), self.run)
@@ -35,7 +42,8 @@ class Controller:
         QtCore.QObject.connect(self.window.ui.stepButton, QtCore.SIGNAL("clicked()"), self.step)
         QtCore.QObject.connect(self.window.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.pause)
         QtCore.QObject.connect(QtCore.QCoreApplication.instance(), QtCore.SIGNAL("aboutToQuit()"), self.cleanup)
-    
+        self.setThreadRunning(False)
+        
     def pause(self):
         self.timer.stop()
         if self.worker is not None:
@@ -46,6 +54,8 @@ class Controller:
             self.worker.halt = True
             
     def init(self):
+        self.pause()
+        
         da = float(self.window.ui.daField.text())
         db = float(self.window.ui.dbField.text())
         ds = float(self.window.ui.dsField.text())
@@ -69,11 +79,12 @@ class Controller:
             self.init()
         if not self.running:
             self.worker = WorkerThread(self, self.texture)
+            QtCore.QObject.connect(self.worker, QtCore.SIGNAL("finished()"), self.setThreadFinished)
             self.worker.start()
             print "Worker started"
             self.timer.start(40)
-            self.running = True
-
+            self.setThreadRunning(True)
+            
     def setOptions(self, options):
         self.window.ui.daField.setText(str(options.D_a))
         self.window.ui.dbField.setText(str(options.D_b))
