@@ -13,3 +13,15 @@ Psyco 1.6.
 INSTALLATION
 ------------
 
+Appart from the dependencies, no installation should be necessary.
+
+USAGE
+-----
+
+Simply run
+
+	python PyMorphogenesis.py
+
+For additional usage information, you can run
+
+	python PyMorphogenesis.py --help
