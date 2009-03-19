@@ -3,6 +3,15 @@ README
 
 This file provides explanations regarding the PyMorphogenesis project.
 
+FEATURES
+--------
+
+PyMorphogenesis implements the Turing Morphogenesis model [Turing52], as
+described by Turk [Turk91]. It features real time display of the simulation
+results, and the calculations are done in a separate thread. It uses Qt for
+its graphical user interface, OpenGL for the image rendering, and Blitz++
+(via SciPy) for its numerical calculations.
+
 REQUIREMENTS
 ------------
 
@@ -46,3 +55,22 @@ To get stripes, use D_a > 10 * D_b, the width of stripes will decrease when
 D_s increases. To obtain dots, use 5 * D_b > D_a > 3 * D_b. To obtain blobs
 and lines, use D_a >> D_b. The spots will be less intense as the number of
 iterations and D_s increase.
+
+REFERENCES
+----------
+
+[Turk1991] Greg Turk, "Generating Textures on Arbitrary Surfaces Using
+Reaction-Diffusion," Computer Graphics, Vol. 25, No. 4, (SIGGRAPH 91), July
+1991, pp. 289-298.
+
+[Turing1952] Alan Turing, "The Chemical Basis of Morphogenesis," Philosophical
+Transactions of the Royal Society B, Vol. 237, pp. 37-72 (August 14, 1952).
+
+CODE INSPIRATION
+----------------
+
+Reaction-Diffusion Textures, Orion Sky Lawlor,
+http://charm.cs.uiuc.edu/users/olawlor/projects/2003/rd/
+
+Turing's Reaction-Diffusion Model of Morphogenesis, Christopher G. Jennings,
+http://www.sfu.ca/~cjenning/toybox/turingmorph/
