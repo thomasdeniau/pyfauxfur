@@ -54,8 +54,8 @@ class MorphogenesisImageData(ImageData):
     self.width  = width
     self.height = height
     
-    self.grid_a = random.rand(width, height)
-    self.grid_b = random.rand(width, height)
+    self.grid_a = 8 * random.rand(width, height)
+    self.grid_b = 8 * random.rand(width, height)
     
     self.data_ptr = ctypes.c_void_p()
     self.make_texture()
@@ -66,6 +66,7 @@ class MorphogenesisImageData(ImageData):
     self.beta_i = beta_i
     
     self.iteration = 0
+    self.last_time = 1
   
   def _convert(self, format, pitch):
     if format == self._current_format and pitch == self._current_pitch:
@@ -96,8 +97,10 @@ class MorphogenesisImageData(ImageData):
     self.blit_to_texture(texture.target, texture.level, 0, 0, 0, internalformat)
   
   def step(self):
-    D_a     = self.D_a
-    D_b     = self.D_b
+    D_s    = self.D_s
+    D_a    = self.D_a
+    D_b    = self.D_b
+    beta_i = self.beta_i
     
     height = self.height
     width  = self.width
@@ -109,11 +112,10 @@ class MorphogenesisImageData(ImageData):
     
     self.iteration += 1
     
-    print 'Start iteration', self.iteration
-    
     t = time()
     
-    code = '''
+    weave.inline(
+      '''
       #line 119 "MorphogenesisImageData.py"
       int i, j, iplus1, jplus1, iminus1, jminus1;
       double A_o_ij, B_o_ij;
@@ -130,53 +132,67 @@ class MorphogenesisImageData(ImageData):
           A_o_ij = A_o(i, j); B_o_ij = B_o(i, j);
           
           // Component A
-          A_n(i, j) = A_o_ij + 0.01 * (
+          A_n(i, j) = A_o_ij
             // Reaction component
-            A_o_ij * B_o_ij - A_o_ij - 12.0
+            + D_s * (16 - A_o_ij * B_o_ij)
             // Diffusion component
-            + D_a * (A_o(iplus1, j) - 2.0 * A_o_ij + A_o(iminus1, j) + A_o(i, jplus1) - 2.0 * A_o_ij + A_o(i, jminus1)));
+            + D_a * (A_o(iplus1, j) - 2.0 * A_o_ij + A_o(iminus1, j) + A_o(i, jplus1) - 2.0 * A_o_ij + A_o(i, jminus1));
           
           if (A_n(i, j) < 0.0) {
             A_n(i, j) = 0.0;
           }
           
           // Component B
-          B_n(i, j) = B_o_ij + 0.01 * (
+          B_n(i, j) = B_o_ij
             // Reaction component
-            16.0 - A_o_ij * B_o_ij
+            + D_s * (A_o_ij * B_o_ij - B_o_ij - beta_i)
             // Diffusion component
-            + D_b * (B_o(iplus1, j) - 2.0 * B_o_ij + B_o(iminus1, j) + B_o(i, jplus1) - 2.0 * B_o_ij + B_o(i, jminus1)));
+            + D_b * (B_o(iplus1, j) - 2.0 * B_o_ij + B_o(iminus1, j) + B_o(i, jplus1) - 2.0 * B_o_ij + B_o(i, jminus1));
           
           if (B_n(i, j) < 0.0) {
             B_n(i, j) = 0.0;
           }
         }
       }
-    '''
-    
-    # compiler keyword only needed on windows with MSVC installed
-    weave.inline(code,
-     ['D_a', 'D_b', 'height', 'width', 'A_o', 'A_n', 'B_o', 'B_n'],
-     type_converters=weave.converters.blitz)
+      ''',
+      ['D_s', 'D_a', 'D_b', 'beta_i', 'height', 'width', 'A_o', 'A_n', 'B_o', 'B_n'],
+      type_converters=weave.converters.blitz)
     
     self.grid_a = A_n
     self.grid_b = B_n
     
-    print 'mean(A) =', A_n.mean(), 'mean(B) =', B_n.mean()
+    self.last_time = time() - t
+  
+  def verboseStep(self):
+    print 'Start iteration', self.iteration
     
-    print 'End iteration', self.iteration, ' in ', '%fs'%(time() - t)
+    self.step()
+    
+    print 'mean(A) =', self.meanA(), 'mean(B) =', self.meanB()
+    
+    print 'FPS : ', self.fps()
+  
+  def meanA(self):
+    return self.grid_a.mean()
+  
+  def meanB(self):
+    return self.grid_b.mean()
+  
+  def fps(self):
+    '''Return the number of frames per second based on the length of the last execution'''
+    return "%.1f"%(1 / self.last_time)
   
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
 
 class MorphogenesisImageDataTests(unittest.TestCase):
   def setUp(self):
-    self.texture = MorphogenesisImageData(400, 400, 0, 3.5, 16, 0)
+    self.texture = MorphogenesisImageData(400, 400, 0.04, 0.25, 0.0625, 12)
   
   def testStep(self):
-    self.texture.step()
+    self.texture.verboseStep()
     
-    self.texture.step()
+    self.texture.verboseStep()
 
 if __name__ == '__main__':
   unittest.main()
