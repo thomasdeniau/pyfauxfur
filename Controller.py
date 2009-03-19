@@ -37,7 +37,14 @@ class Controller:
         if self.dumpAtEndPath is not None:
           self.window.ui.widget.grabFrameBuffer().save(os.path.join(self.dumpAtEndPath, self.texture.imageName()) + '.png')
           QtCore.QCoreApplication.instance().quit()
-    
+
+    def saveScreenshot(self):
+        dialog = QtGui.QFileDialog()
+        dialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
+        if dialog.exec_() == QtGui.QDialog.Accepted:
+          f = dialog.selectedFiles()[0]
+          self.window.ui.widget.grabFrameBuffer().save(f)
+
     def updateUI(self):
         self.window.ui.widget.updateGL()
         if self.texture is not None:
@@ -53,6 +60,7 @@ class Controller:
         QtCore.QObject.connect(self.window.ui.stepButton, QtCore.SIGNAL("clicked()"), self.step)
         QtCore.QObject.connect(self.window.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.pause)
         QtCore.QObject.connect(self.window.ui.debugInfoMenuItem, QtCore.SIGNAL("triggered()"), self.logDebugInfo)
+        QtCore.QObject.connect(self.window.ui.saveScreenshotMenuItem, QtCore.SIGNAL("triggered()"), self.saveScreenshot)
         QtCore.QObject.connect(QtCore.QCoreApplication.instance(), QtCore.SIGNAL("aboutToQuit()"), self.cleanup)
         self.setThreadRunning(False)
         
