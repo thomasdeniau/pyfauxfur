@@ -180,7 +180,7 @@ class MorphogenesisImageData(ImageData):
     print "Max A : %f, Max B : %f" %(self.grid_a.max(), self.grid_b.max())
   
   def imageName(self):
-    return 'D_s=%f-D_a=%f-D_b=%f-beta_i=%f.png'%(self.D_s, self.D_a, self.D_b, self.beta_i)
+    return 'D_s=%s-D_a=%s-D_b=%s-beta_i=%s.png'%(str(self.D_s), str(self.D_a), str(self.D_b), str(self.beta_i))
   
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
@@ -188,6 +188,9 @@ class MorphogenesisImageData(ImageData):
 class MorphogenesisImageDataTests(unittest.TestCase):
   def setUp(self):
     self.texture = MorphogenesisImageData(400, 400, 0.04, 0.25, 0.0625, 12)
+  
+  def testImageName(self):
+    self.assertEqual(self.texture.imageName(), 'D_s=0.04-D_a=0.25-D_b=0.0625-beta_i=12.png')
   
   def testStep(self):
     self.texture.verboseStep()
