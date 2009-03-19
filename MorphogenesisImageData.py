@@ -45,7 +45,7 @@ class MorphogenesisImageData(ImageData):
     print ''
     print '   texture width =', width
     print '  texture height =', height
-    print '...'
+    print ''
     
     # TODO : Do we need to specify the 'pitch' keyword parameter ?
     super(MorphogenesisImageData, self).__init__(
