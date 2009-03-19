@@ -63,7 +63,7 @@ def main(argv=None):
   QtOpenGL.QGLFormat.setDefaultFormat(f);
   
   app = QtGui.QApplication(args)
-    
+  
   window = MainWindow()
   controller = Controller(window)
   controller.awake()
