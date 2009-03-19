@@ -81,7 +81,6 @@ class Controller:
             self.worker = WorkerThread(self, self.texture)
             QtCore.QObject.connect(self.worker, QtCore.SIGNAL("finished()"), self.setThreadFinished)
             self.worker.start()
-            print "Worker started"
             self.timer.start(40)
             self.setThreadRunning(True)
             
