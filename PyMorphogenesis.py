@@ -28,7 +28,13 @@ def main(argv=None):
     '-r', '--autorun', dest='autorun', default=False, action='store_true',
     help='automatically launch morphogenesis')
   parser.add_option(
-    '-i', '--iterations', dest='iterations', default=1000, metavar='ITERATIONS')
+    '-i', '--iterations', dest='iterations', type='int', default=1000,
+    help='when running automatically, stop after this many iterations',
+    metavar='ITERATIONS')
+  parser.add_option(
+    '-p', '--dump_path', dest='dumpAtEndPath', type="string", default=None,
+    help='when running automatically, if not empty, save the final image and quit',
+    metavar='PATH')
   
   parser.add_option(
     '-s', dest='D_s', type="float", default=0.0005,
@@ -68,7 +74,7 @@ def main(argv=None):
   controller.setOptions(options)
   
   if options.autorun:
-    controller.run(maxIterations=options.iterations, dumpAtEndPath="")
+    controller.run(maxIterations=options.iterations, dumpAtEndPath=options.dumpAtEndPath)
   
   window.show()
 
