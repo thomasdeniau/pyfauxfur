@@ -163,22 +163,22 @@ class MorphogenesisImageData(ImageData):
     self.grid_b = B_n
     
     self.last_time = time() - t
-    self.fps = self.fps * 29./30. + 1./(self.last_time*30.)
+    self.fps = self.fps * 29. / 30. + 1. / (self.last_time * 30.)
     
   def verboseStep(self):
     print 'Start iteration', self.iteration
     
     self.step()
     
-    print 'mean(A) =', self.meanA(), 'mean(B) =', self.meanB()
+    print 'mean(A) =', self.grid_a.mean(), 'mean(B) =', self.grid_b.mean()
     
-    print 'FPS in the model code only : ', self.fps
+    print 'Time : %fs'%self.last_time
   
   def logDebugInfo(self):
     print "Min A : %f, Min B : %f" %(self.grid_a.min(), self.grid_b.min())
     print "Mean A : %f, Mean B : %f" %(self.grid_a.mean(), self.grid_b.mean())
     print "Max A : %f, Max B : %f" %(self.grid_a.max(), self.grid_b.max())
-    
+  
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
 
@@ -187,6 +187,12 @@ class MorphogenesisImageDataTests(unittest.TestCase):
     self.texture = MorphogenesisImageData(400, 400, 0.04, 0.25, 0.0625, 12)
   
   def testStep(self):
+    self.texture.verboseStep()
+    
+    self.texture.verboseStep()
+    
+    self.texture.verboseStep()
+    
     self.texture.verboseStep()
     
     self.texture.verboseStep()
