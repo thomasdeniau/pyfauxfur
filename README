@@ -33,3 +33,16 @@ For additional usage information, you can run
 You can also generate a batch of sample images after 1000 iterations with
 
 	./test_images.sh
+
+SOME PATTERNS
+-------------
+
+The default parameters (which you can see with the --help option) are a good
+starting point for interesting textures. Running the program for 1000 or so
+iterations with parameters within [0.5, 2] * default values will produce
+interesting results. Changing ß_i is not recommended.
+
+To get stripes, use D_a > 10 * D_b, the width of stripes will decrease when
+D_s increases. To obtain dots, use 5 * D_b > D_a > 3 * D_b. To obtain blobs
+and lines, use D_a >> D_b. The spots will be less intense as the number of
+iterations and D_s increase.
