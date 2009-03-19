@@ -27,6 +27,8 @@ def main(argv=None):
   parser.add_option(
     '-r', '--autorun', dest='autorun', default=False, action='store_true',
     help='automatically launch morphogenesis')
+  parser.add_option(
+    '-i', '--iterations', dest='iterations', default=1000, metavar='ITERATIONS')
   
   parser.add_option(
     '-s', dest='D_s', type="float", default=0.0005,
@@ -66,7 +68,7 @@ def main(argv=None):
   controller.setOptions(options)
   
   if options.autorun:
-    controller.run()
+    controller.run(maxIterations=options.iterations)
   
   window.show()
 
