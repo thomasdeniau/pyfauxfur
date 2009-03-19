@@ -12,6 +12,10 @@ import sys
 import math
 from optparse import OptionParser
 
+from PyQt4 import QtCore, QtGui
+from MainWindow import MainWindow
+from Controller import Controller
+
 from MorphogenesisImageData import MorphogenesisImageData
 
 program = 'PyMorphogenesis'
@@ -53,32 +57,17 @@ def main(argv=None):
     print program + ', ' + version
     quit()
   
-  print 'Generating texture with the following parameters :'
-  print '   Reaction rate =', options.D_s
-  print 'A diffusion rate =', options.D_a
-  print 'B diffusion rate =', options.D_b
-  print '    B decay rate =', options.beta_i
-  print ''
-  print '   texture width =', options.width
-  print '  texture height =', options.height
-  print '...'
   
-  texture = MorphogenesisImageData(
-    options.width, options.height,
-    options.D_s, options.D_a, options.D_b, options.beta_i)
-  
-  texture.blit(0, 0)
-  
-  texture.step()
-  
-  texture.make_texture()
-  
-  texture.dirty()
-  
-  print texture
-  
-  print 'Done !'
+  app = QtGui.QApplication(sys.argv)
+    
+  window = MainWindow()
+  controller = Controller(window)
+  controller.awake()
+  controller.setOptions(options)
+  window.show()
 
+  app.exec_()
+    
 if __name__ == "__main__":
   import psyco
   psyco.full()

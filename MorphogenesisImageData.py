@@ -35,6 +35,16 @@ class MorphogenesisImageData(ImageData):
       `beta_i` : float
     '''
     
+    print 'Generating texture with the following parameters :'
+    print '   Reaction rate =', D_s
+    print 'A diffusion rate =', D_a
+    print 'B diffusion rate =', D_b
+    print '    B decay rate =', beta_i
+    print ''
+    print '   texture width =', width
+    print '  texture height =', height
+    print '...'
+    
     self.width  = width
     self.height = height
     

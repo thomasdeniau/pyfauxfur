@@ -21,6 +21,7 @@ class WorkerThread ( threading.Thread ):
 class Controller:        
     def __init__(self, window):
         self.window = window
+        self.worker = None
         self.timer = QtCore.QTimer(window)
         
     def awake(self):
@@ -33,16 +34,16 @@ class Controller:
             self.worker.halt = True
         
     def run(self):
-        da = float(window.ui.daField.text())
-        db = float(window.ui.dbField.text())
-        ds = float(window.ui.dsField.text())
-        beta = float(window.ui.betaField.text())
-        width = window.ui.widthSlider.value()
-        height = window.ui.heightSlider.value()
+        da = float(self.window.ui.daField.text())
+        db = float(self.window.ui.dbField.text())
+        ds = float(self.window.ui.dsField.text())
+        beta = float(self.window.ui.betaField.text())
+        width = self.window.ui.widthSlider.value()
+        height = self.window.ui.heightSlider.value()
         
         texture = MorphogenesisImageData(width, height, ds, da, db, beta)
-        window.ui.widget.texture = texture
-        window.ui.widget.makeCurrent()
+        self.window.ui.widget.setTexture(texture)
+        self.window.ui.widget.makeCurrent()
         texture.blit(0, 0)
         
         self.worker = WorkerThread(texture)
@@ -50,13 +51,10 @@ class Controller:
         
         self.timer.start(0.04)
 
-if __name__ == "__main__":
-    
-    app = QtGui.QApplication(sys.argv)
-    
-    window = MainWindow()
-    controller = Controller(window)
-    controller.awake()
-    window.show()
-
-    app.exec_()
+    def setOptions(self, options):
+        self.window.ui.daField.setText(str(options.D_a))
+        self.window.ui.dbField.setText(str(options.D_b))
+        self.window.ui.dsField.setText(str(options.D_s))
+        self.window.ui.betaField.setText(str(options.beta_i))
+        self.window.ui.widthSlider.setValue(options.width)
+        self.window.ui.heightSlider.setValue(options.height)
