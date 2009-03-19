@@ -18,6 +18,7 @@ license.
 import unittest
 import ctypes
 from numpy import dstack, random, zeros
+from scipy import weave
 from pyglet.image import ImageData
 from time import time
 
@@ -64,10 +65,6 @@ class MorphogenesisImageData(ImageData):
     self.D_b    = D_b
     self.beta_i = beta_i
     
-    self.dx2     = 1.0 / width**2
-    self.dy2     = 1.0 / height**2
-    self.dnr_inv = 0.5 / (self.dx2 + self.dy2)
-    
     self.iteration = 0
   
   def _convert(self, format, pitch):
@@ -100,9 +97,8 @@ class MorphogenesisImageData(ImageData):
     self.blit_to_texture(texture.target, texture.level, 0, 0, 0, internalformat)
   
   def step(self):
-    dx2     = self.dx2
-    dy2     = self.dy2
-    dnr_inv = self.dnr_inv
+    D_a     = self.D_a
+    D_b     = self.D_b
     
     height = self.height
     width  = self.width
@@ -118,31 +114,43 @@ class MorphogenesisImageData(ImageData):
     
     t = time()
     
-    for i in range(0, width):
-      # Treat the surface as a torus by wrapping at the edges
-      iplus1  = i + 1 if i < width - 1 else 0
-      iminus1 = i - 1 if i > 0 else width - 1
+    code = '''
+      #line 119 "MorphogenesisImageData.py"
+      int i, j, iplus1, jplus1, iminus1, jminus1;
+      blitz::Array<double, 2> A_o_ij, B_o_ij;
       
-      for j in range(0, height):
-        jplus1  = j + 1 if j < height -1 else 0
-        jminus1 = j - 1 if j > width - 1 else height -1
-
-        # Component A
-        A_diffuse  = self.D_a * (A_o[iplus1][j] - 2.0 * A_o[i][j] + A_o[iminus1][j] + A_o[i][jplus1] - 2.0 * A_o[i][j] + A_o[i][jminus1])
-        A_reaction = A_o[i][j] * B_o[i][j] - A_o[i][j] - 12.0
+      for (i = 0; i < width; i++) {
+        // Treat the surface as a torus by wrapping at the edges
+        iplus1  = i < width - 1 ? i + 1 : 0;
+        iminus1 = i > 0 ? i - 1 : width - 1;
+      
+        for (j = 0; j < height; j++) {
+          jplus1  = j < height - 1 ? j + 1 : 0;
+          jminus1 = j > width - 1 ? j - 1 : height - 1;
+          
+          A_o_ij = A_o[i][j]; B_o_ij = B_o[i][j];
+          
+          // Component A
+          A_n[i][j] = max(0, A_o_ij + 0.01 * (
+            // Reaction component
+            A_o_ij * B_o_ij - A_o_ij - 12.0
+            // Diffusion component
+            + D_a * (A_o[iplus1][j] - 2.0 * A_o_ij + A_o[iminus1][j] + A_o[i][jplus1] - 2.0 * A_o_ij + A_o[i][jminus1])));
         
-        A_n[i][j] = A_o[i][j] + 0.01 * (A_reaction + A_diffuse)
-        
-        if A_n[i][j] < 0.0:
-          A_n[i][j] = 0.0
-
-        # Component B
-        B_diffusion = self.D_b * (B_o[iplus1][j] - 2.0 * B_o[i][j] + B_o[iminus1][j] + B_o[i][jplus1] - 2.0 * B_o[i][j] + B_o[i][jminus1])
-        B_reaction  = 16.0 - A_o[i][j] * B_o[i][j]
-        B_n[i][j]   = B_o[i][j] + 0.01 * (B_reaction + B_diffusion)
-        
-        if B_n[i][j] < 0.0:
-          B_n[i][j] = 0.0
+          // Component B
+          B_n[i][j]   = max(0, B_o_ij + 0.01 * (
+            // Reaction component
+            16.0 - A_o_ij * B_o_ij
+            // Diffusion component
+            + D_b * (B_o[iplus1][j] - 2.0 * B_o_ij + B_o[iminus1][j] + B_o[i][jplus1] - 2.0 * B_o_ij + B_o[i][jminus1])));
+        }
+      }
+    '''
+    
+    # compiler keyword only needed on windows with MSVC installed
+    weave.inline(code,
+     ['D_a', 'D_b', 'height', 'width', 'A_o', 'A_n', 'B_o', 'B_n'],
+     type_converters=weave.converters.blitz)
     
     self.grid_a = A_n
     self.grid_b = B_n
@@ -154,9 +162,14 @@ class MorphogenesisImageData(ImageData):
   def __repr__(self):
     return str((self.grid_a, self.grid_b))
 
-class TextureTests(unittest.TestCase):
+class MorphogenesisImageDataTests(unittest.TestCase):
   def setUp(self):
-    pass
+    self.texture = MorphogenesisImageData(100, 100, 0, 3.5, 16, 0)
+  
+  def testStep(self):
+    self.texture.step()
+    
+    self.texture.step()
 
 if __name__ == '__main__':
   unittest.main()

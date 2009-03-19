@@ -71,9 +71,6 @@ def main(argv=None):
   window.show()
 
   app.exec_()
-    
+
 if __name__ == "__main__":
-  import psyco
-  psyco.full()
-  
   sys.exit(main())
