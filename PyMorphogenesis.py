@@ -42,10 +42,10 @@ def main(argv=None):
     help="decay rate for b [default: %default]", metavar='DECAY')
   
   parser.add_option(
-    '-x', '--width', dest='width', type="int", default=20,
+    '-x', '--width', dest='width', type="int", default=400,
     help="width of the generated texture [default: %default]", metavar='WIDTH')
   parser.add_option(
-    '-y', '--height', dest='height', type="int", default=20,
+    '-y', '--height', dest='height', type="int", default=400,
     help="height of the generated texture [default: %default]", metavar='HEIGHT')
   
   (options, args) = parser.parse_args()
