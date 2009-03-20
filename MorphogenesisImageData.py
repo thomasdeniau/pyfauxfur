@@ -119,16 +119,17 @@ class MorphogenesisImageData(ImageData):
       '''
       #line 119 "MorphogenesisImageData.py"
       int i, j, iplus1, jplus1, iminus1, jminus1;
+      int wminus1 = width - 1, hminus1 = height - 1;
       double A_ij, B_ij;
       
       for (i = 0; i < width; i++) {
         // Treat the surface as a torus by wrapping at the edges
-        iplus1  = i < width - 1 ? i + 1 : 0;
-        iminus1 = i > 0 ? i - 1 : width - 1;
+        iplus1  = i < wminus1 ? i + 1 : 0;
+        iminus1 = i > 0 ? i - 1 : wminus1;
       
         for (j = 0; j < height; j++) {
-          jplus1  = j < height - 1 ? j + 1 : 0;
-          jminus1 = j > 0 ? j - 1 : height - 1;
+          jplus1  = j < hminus1 ? j + 1 : 0;
+          jminus1 = j > 0 ? j - 1 : hminus1;
           
           A_ij = A_o(i, j); B_ij = B_o(i, j);
           
@@ -137,7 +138,7 @@ class MorphogenesisImageData(ImageData):
             // Reaction component
             + D_s * (16.0 - A_ij * B_ij)
             // Diffusion component
-            + D_a * (A_o(iplus1, j) - 2.0 * A_ij + A_o(iminus1, j) + A_o(i, jplus1) - 2.0 * A_ij + A_o(i, jminus1));
+            + D_a * (A_o(iplus1, j) + A_o(iminus1, j) + A_o(i, jplus1) + A_o(i, jminus1) - 4.0 * A_ij);
           
           A_ij = A_n(i, j);
           
@@ -152,7 +153,7 @@ class MorphogenesisImageData(ImageData):
             // Reaction component
             + D_s * (A_ij * B_ij - B_ij - beta_i)
             // Diffusion component
-            + D_b * (B_o(iplus1, j) - 2.0 * B_ij + B_o(iminus1, j) + B_o(i, jplus1) - 2.0 * B_ij + B_o(i, jminus1));
+            + D_b * (B_o(iplus1, j) + B_o(iminus1, j) + B_o(i, jplus1) + B_o(i, jminus1) - 4.0 * B_ij);
           
           B_ij = B_n(i, j);
 
@@ -199,7 +200,7 @@ class MorphogenesisImageDataTests(unittest.TestCase):
     self.texture = MorphogenesisImageData(400, 400, 0.04, 0.25, 0.0625, 12)
   
   def testImageName(self):
-    self.assertEqual(self.texture.imageName(), 'D_s=0.04-D_a=0.25-D_b=0.0625-beta_i=12.png')
+    self.assertEqual(self.texture.imageName(), 'D_s=0.04-D_a=0.25-D_b=0.0625-beta_i=12-iter=0')
   
   def testStep(self):
     self.texture.verboseStep()
