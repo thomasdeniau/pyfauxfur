@@ -87,7 +87,6 @@ class Controller:
         self.texture = MorphogenesisImageData(width, height, ds, da, db, beta)
         self.window.ui.widget.setTexture(self.texture)
         self.window.ui.widget.makeCurrent()
-        self.texture.blit(0, 0)
 
     def step(self):
         if self.texture == None:

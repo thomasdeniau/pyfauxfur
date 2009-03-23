@@ -19,10 +19,11 @@ import unittest
 import ctypes
 from numpy import dstack, random, zeros
 from scipy import weave
-from pyglet.image import ImageData
 from time import time
 
-class MorphogenesisImageData(ImageData):
+from pyglet.gl import *
+
+class MorphogenesisImageData:
   def __init__(self, width, height, D_s, D_a, D_b, beta_i):
     '''Initialize morphogenesis image data with specific calculation parameters
 
@@ -40,10 +41,6 @@ class MorphogenesisImageData(ImageData):
     print 'Generating texture with the following parameters :'
     print '-r -s', D_s, '-a', D_a, '-b', D_b, '-d', beta_i, '-x', width, '-y', height
     print ''
-    
-    # TODO : Do we need to specify the 'pitch' keyword parameter ?
-    super(MorphogenesisImageData, self).__init__(
-      width, height, 'RGB', None)
       
     self.width  = width
     self.height = height
@@ -52,8 +49,26 @@ class MorphogenesisImageData(ImageData):
     self.grid_b = 8 * random.rand(width, height)
     
     self.data_ptr = ctypes.c_void_p()
-    self.make_texture()
     
+    self.texture_id = GLuint()
+    glGenTextures(1, byref(self.texture_id)) # Generate 1 texture name
+    glBindTexture(GL_TEXTURE_2D, self.texture_id.value)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    
+    blank = (GLubyte * (width * height * 4))()
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, 
+                 GL_RGBA, GL_UNSIGNED_BYTE, blank)
+    glFlush()
+        
+    self.texture_row_length = 3*width
+    if self.texture_row_length & 0x1:
+      self.alignment = 1
+    elif self.texture_row_length & 0x2:
+      self.alignment = 2
+    else:
+      self.alignment = 4
+             
     self.D_s    = D_s
     self.D_a    = D_a
     self.D_b    = D_b
@@ -63,12 +78,6 @@ class MorphogenesisImageData(ImageData):
     self.fps = 0
     self.last_time = 1
   
-  def _convert(self, format, pitch):
-    if format == self._current_format and pitch == self._current_pitch:
-      return self.data_ptr
-    else:
-      raise ValueError('Unable to retrieve the texture data without converting.')
-
   def make_texture(self):
     '''
     Calculates the colors for each point in the grid, and then copies this
@@ -93,9 +102,15 @@ class MorphogenesisImageData(ImageData):
     '''
     Force an update of the texture data.
     '''
-    texture = self.texture
-    internalformat = None
-    self.blit_to_texture(texture.target, texture.level, 0, 0, 0, internalformat)
+    
+    glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT)
+    glPixelStorei(GL_UNPACK_ALIGNMENT, self.alignment)
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, self.width)
+    glBindTexture(GL_TEXTURE_2D, self.texture_id.value)
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, self.width, self.height,
+                    GL_RGB, GL_UNSIGNED_BYTE, self.data_ptr)
+
+    glPopClientAttrib()
   
   def step(self):
     D_s    = self.D_s

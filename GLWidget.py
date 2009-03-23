@@ -1,4 +1,4 @@
-from PyQt4.QtOpenGL import QGLWidget
+from PyQt4.QtOpenGL import *
 from pyglet.gl import *
 
 class GLWidget(QGLWidget):
@@ -30,13 +30,28 @@ class GLWidget(QGLWidget):
     
     def setTexture(self, texture):
         self.texture = texture
+        # (x,y) in tex coordinates [0,1]x[0,1] -> (x,y) image
+        self.texCoords = (GLfloat * 20)(
+             0., 0.,    0., 0., 0.,
+             1., 0.,    float(texture.width), 0., 0.,
+             1., 1.,    float(texture.width), float(texture.height), 0.,
+             0., 1.,    0., float(texture.height), 0.)
+             
         self.resizeGL(self.size().width(), self.size().height())
 
     def paintGL(self):
         if self.texture is not None:
             self.texture.make_texture()
             self.texture.dirty()
-            self.texture.blit(0,0)
+
+            glPushAttrib(GL_ENABLE_BIT)
+            glEnable(GL_TEXTURE_2D)
+            glBindTexture(GL_TEXTURE_2D, self.texture.texture_id.value)
+            glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
+            glInterleavedArrays(GL_T2F_V3F, 0, self.texCoords)
+            glDrawArrays(GL_QUADS, 0, 4)
+            glPopClientAttrib()
+            glPopAttrib()
         else:
             glClearColor(0,0,0,0) # noir
             glClear(GL_COLOR_BUFFER_BIT)
