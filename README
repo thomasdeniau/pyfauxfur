@@ -16,8 +16,8 @@ REQUIREMENTS
 ------------
 
 This program has been tested with python 2.5. It requires PyQt4, NumPy,
-SciPy and pyglet. It has been tested with PyQt4 4.4.4, NumPy 1.2.1,
-SciPy 0.7.0 and Pyglet 1.1.2.
+SciPy and PyOpenGL >= 3.0. It has been tested with PyQt4 4.4.4, NumPy 1.2.1,
+SciPy 0.7.0 and PyOpenGL 3.0.0.
 
 INSTALLATION
 ------------
