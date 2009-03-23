@@ -73,10 +73,10 @@ def main(argv=None):
   controller.awake()
   controller.setOptions(options)
   
+  window.show()
+    
   if options.autorun:
     controller.run(maxIterations=options.iterations, dumpAtEndPath=options.dumpAtEndPath)
-  
-  window.show()
 
   app.exec_()
 

@@ -49,8 +49,6 @@ class MorphogenesisImageData:
     self.grid_a = 8 * random.rand(width, height)
     self.grid_b = 8 * random.rand(width, height)
     
-    self.data_ptr = ctypes.c_void_p()
-    
     self.texture_id = glGenTextures(1) # Generate 1 texture name
     glBindTexture(GL_TEXTURE_2D, self.texture_id)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
@@ -91,22 +89,15 @@ class MorphogenesisImageData:
     
     g = (self.grid_a - min) / (max - min)
     
-    # make sure to retain references to grid and array_interface in self to avoid garbage collecting
     self.grid = (255 * dstack((g, g, z))).astype('u1')
-    self.array_interface = self.grid.__array_interface__
-    
-    data_ptr_int, readonly = self.array_interface['data']
-    self.data_ptr.value = data_ptr_int
-    
+
   def dirty(self):
     '''
     Force an update of the texture data.
     '''
-    
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT)
     glPixelStorei(GL_UNPACK_ALIGNMENT, self.alignment)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, self.width)
-    glBindTexture(GL_TEXTURE_2D, self.texture_id)
     glTexSubImage2Dub(GL_TEXTURE_2D, 0, 0, 0, GL_RGB, self.grid)
 
     glPopClientAttrib()
