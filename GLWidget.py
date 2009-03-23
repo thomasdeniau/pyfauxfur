@@ -1,5 +1,6 @@
 from PyQt4.QtOpenGL import *
-from pyglet.gl import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
 
 class GLWidget(QGLWidget):
     texture = None
@@ -46,7 +47,7 @@ class GLWidget(QGLWidget):
 
             glPushAttrib(GL_ENABLE_BIT)
             glEnable(GL_TEXTURE_2D)
-            glBindTexture(GL_TEXTURE_2D, self.texture.texture_id.value)
+            glBindTexture(GL_TEXTURE_2D, self.texture.texture_id)
             glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
             glInterleavedArrays(GL_T2F_V3F, 0, self.texCoords)
             glDrawArrays(GL_QUADS, 0, 4)

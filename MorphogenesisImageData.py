@@ -21,7 +21,8 @@ from numpy import dstack, random, zeros
 from scipy import weave
 from time import time
 
-from pyglet.gl import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
 
 class MorphogenesisImageData:
   def __init__(self, width, height, D_s, D_a, D_b, beta_i):
@@ -50,9 +51,8 @@ class MorphogenesisImageData:
     
     self.data_ptr = ctypes.c_void_p()
     
-    self.texture_id = GLuint()
-    glGenTextures(1, byref(self.texture_id)) # Generate 1 texture name
-    glBindTexture(GL_TEXTURE_2D, self.texture_id.value)
+    self.texture_id = glGenTextures(1) # Generate 1 texture name
+    glBindTexture(GL_TEXTURE_2D, self.texture_id)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
     
     blank = (GLubyte * (width * height * 4))()
@@ -106,9 +106,8 @@ class MorphogenesisImageData:
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT)
     glPixelStorei(GL_UNPACK_ALIGNMENT, self.alignment)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, self.width)
-    glBindTexture(GL_TEXTURE_2D, self.texture_id.value)
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, self.width, self.height,
-                    GL_RGB, GL_UNSIGNED_BYTE, self.data_ptr)
+    glBindTexture(GL_TEXTURE_2D, self.texture_id)
+    glTexSubImage2Dub(GL_TEXTURE_2D, 0, 0, 0, GL_RGB, self.grid)
 
     glPopClientAttrib()
   
