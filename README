@@ -1,7 +1,10 @@
 README
 ======
 
-This file provides explanations regarding the PyMorphogenesis project.
+This file provides basic explanations regarding the PyMorphogenesis project.
+It contains a simple descriptions of its features, system requirements,
+installation and usage instructions. For more information, please refer to the
+report, available in the report/ folder.
 
 FEATURES
 --------
