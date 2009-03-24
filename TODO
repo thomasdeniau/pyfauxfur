@@ -1,0 +1,2 @@
+  - Add better logging (performance, activity, debug information).
+  - Use psycho outside the weave code ; both interact quite badly : weave attempts to access forbidden parts of the psycho code. Maybe by using them in separate parts in the code we can benefit from the performance boost of both solutions.
