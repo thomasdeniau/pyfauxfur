@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-PyMorphogenesis.py
+PyFauxFur.py
 
 Created by Olivier Le Floch on 2009-03-17.
 Program written by Thomas Deniau and Olivier Le Floch.
@@ -11,7 +11,7 @@ Copyright (c) 2009. All rights reserved.
 import sys
 from optparse import OptionParser
 
-program = 'PyMorphogenesis'
+program = 'PyFauxFur'
 version = 'Version 0.1, written by Thomas Deniau and Olivier Le Floch (c) 2009'
 
 def main(argv=None):

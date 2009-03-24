@@ -1,7 +1,7 @@
 README
 ======
 
-This file provides basic explanations regarding the PyMorphogenesis project.
+This file provides basic explanations regarding the PyFauxFur project.
 It contains a simple descriptions of its features, system requirements,
 installation and usage instructions. For more information, please refer to the
 report, available in the report/ folder.
@@ -9,7 +9,7 @@ report, available in the report/ folder.
 FEATURES
 --------
 
-PyMorphogenesis implements the Turing Morphogenesis model [Turing52], as
+PyFauxFur implements the Turing Morphogenesis model [Turing52], as
 described by Turk [Turk91]. It features real time display of the simulation
 results, and the calculations are done in a separate thread. It uses Qt for
 its graphical user interface, OpenGL for the image rendering, and Blitz++
@@ -36,11 +36,11 @@ USAGE
 
 Simply run
 
-	python PyMorphogenesis.py
+	python PyFauxFur.py
 
 For additional usage information, you can run
 
-	python PyMorphogenesis.py --help
+	python PyFauxFur.py --help
 
 You can also generate a batch of sample images after 1000 iterations with
 
