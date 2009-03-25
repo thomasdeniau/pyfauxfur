@@ -56,6 +56,11 @@ def main(argv=None):
     '-y', '--height', dest='height', type="int", default=400,
     help="height of the generated texture [default: %default]", metavar='HEIGHT')
   
+  parser.add_option(
+    '-g', '--generator', dest='generator', type='string', default='random',
+    help='generator to use for the initial conditions [default: %default] (other possible values: stripe)',
+    metavar='NAME')
+  
   (options, args) = parser.parse_args()
   
   if options.version:

@@ -46,8 +46,7 @@ class MorphogenesisImageData:
     self.width  = width
     self.height = height
     
-    self.grid_a = 8 * random.rand(width, height)
-    self.grid_b = 8 * random.rand(width, height)
+    self.generate('stripe')
     
     self.texture_id = glGenTextures(1) # Generate 1 texture name
     glBindTexture(GL_TEXTURE_2D, self.texture_id)
@@ -75,6 +74,14 @@ class MorphogenesisImageData:
     self.iteration = 0
     self.fps = 0
     self.last_time = 1
+  
+  def generate(self, generator):
+    self.grid_a = 8 * random.rand(self.width, self.height)
+    self.grid_b = 8 * random.rand(self.width, self.height)
+    
+    if generator == 'stripe':
+      self.grid_a = self.grid_a / 8
+      self.grid_a[self.width / 2, :] = 8
   
   def make_texture(self):
     '''
