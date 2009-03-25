@@ -31,6 +31,15 @@ If Ui_MainWindow.py has not been generated, you can do so by running
 
 	./gen.sh
 
+COMMON PROBLEMS
+---------------
+
+	ImportError: No module named Ui_MainWindow
+
+Please refer to the INSTALLATION section : you need to generate the necessary
+UI files for the Qt-based interface to be correctly displayed. These files may
+be generated automatically in a future release.
+
 USAGE
 -----
 
