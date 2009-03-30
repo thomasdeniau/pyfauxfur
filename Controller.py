@@ -85,6 +85,10 @@ class Controller:
         height = self.window.ui.heightSlider.value()
         
         self.texture = MorphogenesisImageData(width, height, ds, da, db, beta)
+        if self.window.ui.initComboBox.currentIndex() == 0:
+          self.texture.generate('random')
+        else:
+          self.texture.generate('stripe')
         self.window.ui.widget.setTexture(self.texture)
         self.window.ui.widget.makeCurrent()
 
